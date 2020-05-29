@@ -21,7 +21,7 @@ module CTRL_tb;
 	   
 	   PU_RX=1;
 	 
-	   #19000
+	   #25000
 
            PU_RX=0;
 

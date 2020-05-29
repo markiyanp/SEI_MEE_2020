@@ -10,25 +10,21 @@ module BPF
 
    reg 	  RDY_BPF=0;
    reg    AUX = 0;
-   
-   always@ (posedge CLK)
-     begin
-	if(CAL_BPF & PU_BPF)
-	  begin
-	     #10000
-	     RDY_BPF<=1;
-	  end
-     end
-   
 
-   always@ (posedge CLK or negedge PU_BPF)
-     begin
-	if(PU_BPF == 0)
-	  begin
-	     RDY_BPF<=0;
-	  end
-     end
+   reg [32:0] counter = 0;
    
-
+   
+ always @(posedge CLK) begin
+    if (!PU_BPF) begin
+        counter <= 40;  /*Tcal + Trdy = 8us => 8 * 5 = 40 */
+        RDY_BPF <= 0;
+    end else if (counter > 0) begin
+       if(CAL_BPF==1)begin
+        counter <= counter - 1;
+       end
+    end else begin
+        RDY_BPF <= 1;
+    end
+end
 
 endmodule //BPF

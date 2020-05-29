@@ -11,25 +11,21 @@ module IREF
    reg    CAL_IREF_STA=0;
    reg 	  RDY_IREF=0;
    reg    AUX = 0;
-   
-   always@ (posedge CLK)
-     begin
-	if(CAL_IREF & PU_IREF)
-	  begin
-	     #9000
-	     RDY_IREF<=1;
-	  end
-     end
-   
 
-   always@(posedge CLK or negedge PU_IREF)
-     begin
-	if(PU_IREF == 0)
-	  begin
-	     RDY_IREF<=0;
-	  end
-     end
+   reg [32:0] counter = 0;
+
+always @(posedge CLK) begin
+    if (!PU_IREF) begin
+        counter <= 35;  /*Tcal + Trdy = 7us => 7 * 5 = 35*/
+        RDY_IREF <= 0;
+    end else if (counter > 0) begin
+        if(CAL_IREF==1)begin
+        counter <= counter - 1;
+       end
+    end else begin
+        RDY_IREF <= 1;
+    end
+end
    
-
-
+   
 endmodule //IREF

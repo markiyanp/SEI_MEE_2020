@@ -25,7 +25,7 @@ module CTRL
    wire CAL_SYNT_STA = 0;
 
    reg TESTE;
-   
+   reg [32:0] counter = 0;
 
    
    IREF iref(
@@ -48,30 +48,12 @@ module CTRL
 	     .PU_BPF(PU_BPF),
 	     .RDY_BPF(RDY_BPF)
 	    );
-  
-
-  always@(posedge CLK)
-    begin
-       if(PU_RX==1)
-	 begin
-	    PU_IREF<=1;
-	    PU_BPF<=1;
- 	    PU_SYNT<=1;
-	    CAL_IREF<=1;
-	    CAL_SYNT<=1;
-	    CAL_BPF<=1;
-	 end
-       if(RDY_IREF & RDY_SYNT & RDY_BPF)
-	 begin
-	    RDY_RX<=1;
-	 end
-    end
-
-
+ 
    always@ (posedge CLK or negedge PU_RX)
      begin
 	if(PU_RX==0)
 	  begin
+	     counter<=10; /* 10 = 2us * 5 */
 	     RDY_RX<=0;
 	     CAL_IREF<=0;
 	     CAL_SYNT<=0;
@@ -80,6 +62,24 @@ module CTRL
 	     PU_BPF<=0;
 	     PU_SYNT<=0;
 	  end
+	else begin
+	   PU_IREF<=1;
+	   PU_BPF<=1;
+	   PU_SYNT<=1;
+	   if(counter > 0)begin
+	      counter <= counter - 1;
+	   end
+	   else begin
+	      CAL_IREF<=1;
+	      CAL_BPF<=1;
+	      CAL_SYNT<=1;
+	   end
+	end 
+
+	if(RDY_IREF & RDY_SYNT & RDY_BPF)
+	 begin
+	    RDY_RX<=1;
+	 end
      end
    
    
