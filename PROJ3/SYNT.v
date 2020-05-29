@@ -8,18 +8,15 @@ module SYNT
    output RDY_SYNT
    );
 
-   reg    CAL_SYNT_STA=0;
-   reg 	  RDY_SYNT=0;
-   reg    AUX = 0;
-   
-   reg [32:0] counter = 0;
+   reg 	  RDY_SYNT;   
+   reg [6:0] counter;
 
 always @(posedge CLK) begin
     if (!PU_SYNT) begin
-        counter <= 60;  /*Tcal + Trdy = 12us => 12 * 5 = 60*/
+       counter <= 20;
         RDY_SYNT <= 0;
     end else if (counter > 0) begin
-       if(CAL_SYNT==1)begin
+       if(CAL_SYNT==0)begin
         counter <= counter - 1;
        end
     end else begin

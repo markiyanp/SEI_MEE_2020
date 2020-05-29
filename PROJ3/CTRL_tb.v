@@ -1,8 +1,8 @@
 `timescale 1ns /1ps
 
 module CTRL_tb;
-   reg CLK=0;
-   reg PU_RX=0;
+   reg CLK;
+   reg PU_RX;
    wire RDY_RX;
 
    CTRL ctr(
@@ -10,6 +10,12 @@ module CTRL_tb;
 	    .PU_RX(PU_RX),
 	    .RDY_RX(RDY_RX)
 	    );
+
+
+   initial begin
+           CLK=0;
+           PU_RX=0;
+           end
    
 
 
